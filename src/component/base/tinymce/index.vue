@@ -8,6 +8,7 @@
 import tinymce from 'tinymce/tinymce'
 import Editor from '@tinymce/tinymce-vue'
 import 'tinymce/themes/silver'
+import 'tinymce/icons/default'
 import './import-all'
 
 export default {

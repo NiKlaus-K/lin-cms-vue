@@ -1370,6 +1370,7 @@ body.tox-dialog__disable-scroll {
 }
 .tox .tox-menu.tox-collection.tox-collection--list {
   padding: 0;
+  z-index: 1111;
 }
 .tox .tox-menu.tox-collection.tox-collection--toolbar {
   padding: 4px;
