@@ -1,9 +1,36 @@
 /* eslint-disable class-methods-use-this */
-import _axios, { get, put, _delete } from '@/lin/plugin/axios'
+import _axios, { post, get, put, _delete } from '@/lin/plugin/axios'
 
 // 我们通过 class 这样的语法糖使模型这个概念更加具象化，其优点：耦合性低、可维护性。
 class Article {
-  // constructor() {}
+  constructor(uPage = 0, uCount = 10, gPage = 0, gCount = 5) {
+    this.uPage = uPage
+    this.uCount = uCount
+    this.lPage = gPage
+    this.gCount = gCount
+  }
+
+  async increaseUPage() {
+    this.uPage += 1
+  }
+
+  async increaseGPage() {
+    this.lPage += 1
+  }
+
+  async decreaseUPage() {
+    this.uPage -= 1
+    if (this.uPage < 0) {
+      this.uPage = 0
+    }
+  }
+
+  async decreaseGPage() {
+    this.lPage -= 1
+    if (this.lPage < 0) {
+      this.lPage = 0
+    }
+  }
 
   // 类中的方法可以代表一个用户行为
   async createArticle(data) {
@@ -38,6 +65,14 @@ class Article {
       url: 'v1/article',
       handleError: true,
     })
+  }
+
+  async getArticlePage({ count = this.uCount, page = this.uPage }) {
+    const res = await get('v1/article/page', {
+      count,
+      page,
+    })
+    return res
   }
 }
 

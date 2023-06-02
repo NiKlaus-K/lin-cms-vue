@@ -18,6 +18,19 @@
         @row-click="rowClick"
         v-loading="loading"
       ></lin-table>
+      <!-- 分页 -->
+      <div class="pagination">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :background="true"
+          :page-size="pageCount"
+          :current-page="currentPage"
+          v-if="refreshPagination"
+          layout="prev, pager, next, jumper, total"
+          :total="total_nums"
+        >
+        </el-pagination>
+      </div>
     </div>
 
     <!-- 编辑页面 -->
@@ -43,6 +56,11 @@ export default {
       operate: [],
       showEdit: false,
       editArticleID: 1,
+      refreshPagination: true, // 页数增加的时候，因为缓存的缘故，需要刷新Pagination组件
+      total_nums: 0, // 分组内的用户总数
+      currentPage: 1, // 默认获取第一页的数据
+      pageCount: 10, // 每页10条数据
+      loading: false,
     }
   },
   async created() {
@@ -61,9 +79,11 @@ export default {
   },
   methods: {
     async getArticles() {
+      const { currentPage } = this
       try {
-        const articles = await article.getArticles()
-        this.tableData = articles
+        const articles = await article.getArticlePage({ count: this.pageCount, page: currentPage })
+        this.tableData = articles.data.records
+        this.total_nums = articles.data.total
       } catch (error) {
         if (error.code === 10020) {
           this.tableData = []
@@ -118,6 +138,14 @@ export default {
         }
         return v[j]
       }),)
+    },
+    // 切换table页
+    async handleCurrentChange(val) {
+      console.log(val)
+      this.currentPage = val
+      this.loading = true
+      await this.getArticles('changePage')
+      this.loading = false
     },
   },
 }
